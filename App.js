@@ -34,7 +34,7 @@ export default function App() {
           component={History}
           options={{ title: 'History' }} 
         />
-      </Tab.Navigator>
+              </Tab.Navigator>
     </NavigationContainer>
   );
 }
