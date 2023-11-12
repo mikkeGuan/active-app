@@ -5,6 +5,7 @@ import axios from "axios";
 import { Button, Text } from "@rneui/base";
 import { LinearGradient } from "expo-linear-gradient";
 import {Picker} from '@react-native-picker/picker';
+import supabase from '../config/supabaseClient';
 
 export default function Activities() {
   const [activity, setActivity] = useState("");
@@ -28,6 +29,21 @@ export default function Activities() {
     }
   };
 
+  const doneActivities = async () => {
+    try {
+
+      await supabase.from('completed').upsert([
+        {
+          name: activity,
+          type: category,
+/*           participants: 
+ */        },
+      ])
+    
+  } catch (error) {
+    console.error("Error making activity as done: ", error)
+  }
+}
   useEffect(() => {
     fetchActivities();
   }, []);
@@ -40,7 +56,7 @@ export default function Activities() {
         onValueChange={(itemValue, itemIndex) =>
            setCategory(itemValue)}
       >
-        <Picker.Item label="Education" value="education" />
+        <Picker.Item label="Education" value="education"  />
         <Picker.Item label="Recreational" value="recreational" />
         <Picker.Item label="Social" value="social" />
         <Picker.Item label="DIY" value="diy" />
@@ -50,10 +66,8 @@ export default function Activities() {
         <Picker.Item label="Music" value="music" />
         <Picker.Item label="Busywork" value="busywork" />
       </Picker>
-      <Button radius="xl" size="xl" type="solid" onPress={fetchActivities}>
-        Random Activity
-      </Button>
       <Button
+      style= {{padding: 20}}
         radius="xl"
         size="xl"
         type="solid"
@@ -67,6 +81,11 @@ export default function Activities() {
       >
         Find Activity by Category
       </Button>
+      <Button style={{paddingBottom: 20}}radius="xl" size="xl" type="solid" onPress={fetchActivities}>
+        Random Activity
+      </Button>
+    
+      <Button onPress={doneActivities}>Mark as done</Button>
     </View>
   );
 }
@@ -79,5 +98,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     fontFamily: "Roboto",
     fontWeight: "500",
+
+  
+
   },
-});
+
+}
+
+);
