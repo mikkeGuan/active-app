@@ -1,42 +1,42 @@
+import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button, SafeAreaView, ScrollView } from 'react-native';
 import supabase from '../config/supabaseClient';
-import { useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function History() {
   const [completedActivities, setCompletedActivities] = useState([]);
 
-  useEffect(() => {
-    const fetchCompletedActivities = async () => {
-      try {
-        // Get all activities in the 'completed' table
-        const { data, error } = await supabase.from('completed').select();
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchCompletedActivities = async () => {
+        try {
+          const { data, error } = await supabase.from('completed').select();
 
-        if (error) {
-          setCompletedActivities([]);
+          if (error) {
+            setCompletedActivities([]);
+            console.error(error);
+          }
+
+          if (data) {
+            setCompletedActivities(data);
+          }
+        } catch (error) {
           console.error(error);
         }
+      };
 
-        if (data) {
-          setCompletedActivities(data);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchCompletedActivities();
-  }, []);
+      fetchCompletedActivities();
+    }, [])
+  );
 
   const deleteActivity = async (id) => {
     try {
-      // Delete the activity from the 'completed' table using the id
       const { error } = await supabase.from('completed').delete().eq('id', id);
 
       if (error) {
         console.error('Error deleting activity:', error);
       } else {
-        // If deletion is successful, update the state to reflect the changes
         setCompletedActivities((prevActivities) =>
           prevActivities.filter((activity) => activity.id !== id)
         );
@@ -48,22 +48,17 @@ export default function History() {
 
   return (
     <SafeAreaView style={styles.container}>
-            <ScrollView style={styles.scrollView}>
-  
-      {completedActivities.map((activity) => (
-        <View key={activity.id} style={styles.activityContainer}>
-          <Text>
-            {activity.name} {activity.type}, {activity.participants}
-          </Text>
-          <Button onPress={() => deleteActivity(activity.id)} title="Delete" />
-          
-        </View>
-        
-      ))}
-            </ScrollView>
-
+      <ScrollView style={styles.scrollView}>
+        {completedActivities.map((activity) => (
+          <View key={activity.id} style={styles.activityContainer}>
+            <Text>
+              {activity.name} {activity.type}, {activity.participants}
+            </Text>
+            <Button onPress={() => deleteActivity(activity.id)} title="Delete" />
+          </View>
+        ))}
+      </ScrollView>
     </SafeAreaView>
-    
   );
 }
 
