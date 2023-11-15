@@ -6,6 +6,7 @@ import { Button, Text } from "@rneui/base";
 import { LinearGradient } from "expo-linear-gradient";
 import {Picker} from '@react-native-picker/picker';
 import supabase from '../config/supabaseClient';
+import BoredAPI from 'bored-package'
 
 export default function Activities() {
   const [activity, setActivity] = useState("");
@@ -14,15 +15,17 @@ export default function Activities() {
   const fetchActivities = async () => {
     try {
       const result = await axios.get(API_URL);
+      //const result = await BoredAPI.getRandomActivity()
       setActivity(result.data.activity);
     } catch (error) {
-      console.error("Error loading activities:", error);
+      console.error("Error loading random activity:", error);
     }
   };
 
   const fetchActivitiesByCategory = async () => {
     try {
       const result = await axios.get(`${TYPE_URL}${category}`);
+      //const result = await BoredAPI.getActivityByType(category)
       setActivity(result.data.activity);
     } catch (error) {
       console.error("Error loading activities by category:", error);
