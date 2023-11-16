@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View } from "react-native";
-import { API_URL, TYPE_URL } from "../constants";
 import { Button, Text } from "@rneui/base";
 import { LinearGradient } from "expo-linear-gradient";
 import supabase from '../config/supabaseClient';
