@@ -1,33 +1,44 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { API_URL, TYPE_URL } from "../constants";
-import axios from "axios";
 import { Button, Text } from "@rneui/base";
 import { LinearGradient } from "expo-linear-gradient";
 import supabase from '../config/supabaseClient';
 import BoredAPI from 'bored-package';
 import CustomPicker from './CustomPicker'; 
-import { Feather } from "@expo/vector-icons";
 
 export default function Activities() {
   const [activity, setActivity] = useState("");
   const [category, setCategory] = useState("recreational"); // Default
 
-  const fetchActivities = async () => {
+  useEffect(() => {
+    getRandomActivity();
+  }, []);
+
+  const getRandomActivity = async () => {
     try {
-      const result = await axios.get(API_URL);
-      setActivity(result.data.activity);
+      const activityData = await BoredAPI.getRandomActivity();
+      console.log('Random Activity:', activityData);
+      setActivity(activityData.activity);
     } catch (error) {
-      console.error("Error loading random activity:", error);
+      console.error('Error fetching random activity:', error.message);
     }
   };
 
-  const fetchActivitiesByCategory = async () => {
+   const getActivityByCategory = async () => {
     try {
-      const result = await axios.get(`${TYPE_URL}${category}`);
-      setActivity(result.data.activity);
-    } catch (error) {
-      console.error("Error loading activities by category:", error);
+     const response = await BoredAPI.getActivityByType(category);
+
+  console.log('Response from API:', response);
+
+    if (response && response.activity) {
+       console.log(`Activities in category ${category}:`, response.activity);
+     setActivity(response.activity);
+     } else {
+       console.error('Invalid response from API:', response);
+     }
+   } catch (error) {
+      console.error(`Error fetching activities in category ${category}:`, error.message);
     }
   };
 
@@ -44,21 +55,16 @@ export default function Activities() {
     }
   };
 
-  useEffect(() => {
-    fetchActivities();
-  }, []);
-
   return (
     <View style={styles.container}>
       <Text h2>{activity}</Text>
-      <CustomPicker selectedValue={category} onValueChange={(itemValue, itemIndex) => 
-        setCategory(itemValue)} />
+      <CustomPicker selectedValue={category} onValueChange={(itemValue) => setCategory(itemValue)} />
       <Button
         style={{ padding: 20 }}
         radius="xl"
         size="xl"
         type="solid"
-        onPress={fetchActivitiesByCategory}
+         onPress={getActivityByCategory}
         ViewComponent={LinearGradient}
         linearGradientProps={{
           colors: ["#662D8C", "#00CDAC"],
@@ -68,13 +74,13 @@ export default function Activities() {
       >
         Find Activity by Category
       </Button>
-      <Button style={{ paddingBottom: 20 }} radius="xl" size="xl" type="solid" onPress={fetchActivities}>
+      <Button style={{ paddingBottom: 20 }} radius="xl" size="xl" type="solid" onPress={getRandomActivity}>
         Random Activity
       </Button>
       <Button onPress={doneActivities}>Mark as done</Button>
     </View>
-  );
-}
+    );
+  }
 
 const styles = StyleSheet.create({
   container: {
