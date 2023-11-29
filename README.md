@@ -1,4 +1,4 @@
-# active-app
+# Active-app
 This is a React Native mobile application designed to help users find and manage random activities. The app uses the Bored API for retrieving random activities and activities based on selected categories.
 ## Features
 * **Random activity**: Get a random activity suggestion to do when bored.
