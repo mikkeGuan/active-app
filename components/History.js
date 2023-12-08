@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, SafeAreaView, ScrollView } from "react-native";
+import { StyleSheet, Text, View, SafeAreaView, ScrollView, FlatList} from "react-native";
 import supabase from "../config/supabaseClient";
 import { useFocusEffect } from "@react-navigation/native";
 import { Button, Dialog } from '@rneui/themed';
@@ -15,6 +15,7 @@ export default function History() {
     setVisible(!visible);
   };
 
+ 
   useFocusEffect(
     React.useCallback(() => {
       const fetchCompletedActivities = async () => {
@@ -56,39 +57,44 @@ export default function History() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView}>
-        {completedActivities.map((activity) => (
-          <View key={activity.id} style={styles.activityContainer}>
-            <Text>{activity.name}</Text>
-            <View style={{ flexDirection: "row"}}>
-            <Button
-              title="Details"
-              style={{ marginTop: 10 }}
-              onPress={() => toggleDialog(activity)}
-              icon={<Icon name="info" size={24} color="white" />}
-              buttonStyle={{ backgroundColor: "rgba(0, 123, 255, 1)" }}
-            /> 
-            
-            <Button
-              style={{ marginTop: 10 }}
-              onPress={() => deleteActivity(activity.id)}
-              icon={<Icon name="trash-2" size={24} color="white" />}
-              buttonStyle={{ backgroundColor: "rgba(214, 61, 57, 1)" }}
-            />
+      <ScrollView horizontal>
+        <FlatList
+          data={completedActivities}
+          keyExtractor={(activity) => activity.id.toString()}
+          renderItem={({ item: activity }) => (
+            <View style={styles.activityContainer}>
+              <Text>{activity.name}</Text>
+              <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                <Button
+                  title="Details"
+                  onPress={() => toggleDialog(activity)}
+                  icon={<Icon name="info" size={24} color="white" />}
+                  buttonStyle={{ backgroundColor: 'rgba(0, 123, 255, 1)' }}
+                />
+
+                <Button
+                  onPress={() => deleteActivity(activity.id)}
+                  icon={<Icon name="trash-2" size={24} color="white" />}
+                  buttonStyle={{ backgroundColor: 'rgba(214, 61, 57, 1)', marginLeft: 10 }}
+                />
+              </View>
             </View>
-          </View>
-        ))}
-        <Dialog isVisible={visible}>
-          <Dialog.Title title="Activity Details" />
-          {selectedActivity && (
-              <Text>Category: {selectedActivity.type} {'\n'}Minimum participants: {selectedActivity.participants} {'\n'}Pricing: {selectedActivity.price}</Text>
           )}
-          <Dialog.Button title="Close" onPress={() => setVisible(false)} />
-        </Dialog>
+        />
       </ScrollView>
+
+      <Dialog isVisible={visible}>
+        <Dialog.Title title="Activity Details" />
+        {selectedActivity && (
+          <Text>
+            Category: {selectedActivity.type} {'\n'}Minimum participants: {selectedActivity.participants} {'\n'}Pricing: {selectedActivity.price}
+          </Text>
+        )}
+        <Dialog.Button title="Close" onPress={() => setVisible(false)} />
+      </Dialog>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
