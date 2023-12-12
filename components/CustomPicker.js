@@ -1,8 +1,7 @@
-// CustomPicker.js
 import React from "react";
 import { View } from "react-native";
 import {Picker} from '@react-native-picker/picker';
-import { Feather, Entypo } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 
 const CustomPicker = ({ selectedValue, onValueChange }) => (
   <View

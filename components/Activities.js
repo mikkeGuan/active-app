@@ -11,6 +11,7 @@ export default function Activities() {
   const [category, setCategory] = useState("recreational"); // Default
   const [participants, setParticipants] = useState(0);
   const [price, setPrice] = useState(0);
+  
   useEffect(() => {
     getRandomActivity();
   }, []);
@@ -35,7 +36,7 @@ export default function Activities() {
         /*        console.log(`Activities in category ${category}:`, response.activity);
          */ setActivity(response.activity);
          setParticipants(response.participants)
-         setPrice(response.participants)
+         setPrice(response.price)
       } else {
         console.error("Invalid response from API:", response);
       }
@@ -65,10 +66,6 @@ export default function Activities() {
   return (
     <View style={styles.container}>
       <Text h2>{activity}</Text>
-      <Text>{activity.participants}</Text>
-      <Text>{activity.price}</Text>
-
-
       <CustomPicker
         selectedValue={category}
         onValueChange={(itemValue) => setCategory(itemValue)}

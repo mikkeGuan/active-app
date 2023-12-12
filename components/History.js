@@ -1,19 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, {useState } from "react";
 import { StyleSheet, Text, View, SafeAreaView, ScrollView, FlatList} from "react-native";
 import supabase from "../config/supabaseClient";
 import { useFocusEffect } from "@react-navigation/native";
 import { Button, Dialog } from '@rneui/themed';
 import Icon from "react-native-vector-icons/Feather";
-import BoredAPI from "bored-package";
+
 export default function History() {
   const [completedActivities, setCompletedActivities] = useState([]);
   const [visible, setVisible] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState(null);
 
-  const toggleDialog = (activity) => {
-    setSelectedActivity(activity);
-    setVisible(!visible);
-  };
+
 
  
   useFocusEffect(
@@ -55,18 +52,22 @@ export default function History() {
     }
   };
 
+  const toggleDialog = (activity) => {
+    setSelectedActivity(activity);
+    setVisible(true);
+  };
+  
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView horizontal>
         <FlatList
           data={completedActivities}
-          keyExtractor={(activity) => activity.id.toString()}
-          renderItem={({ item: activity }) => (
+/*           keyExtractor={(activity) => activity.id}
+ */          renderItem={({ item: activity }) => (
             <View style={styles.activityContainer}>
               <Text>{activity.name}</Text>
-              <View style={{ flexDirection: 'row', marginTop: 10 }}>
+              <View style={{ flexDirection: 'row', marginTop: 10 , marginLeft: 20}}>
                 <Button
-                  title="Details"
                   onPress={() => toggleDialog(activity)}
                   icon={<Icon name="info" size={24} color="white" />}
                   buttonStyle={{ backgroundColor: 'rgba(0, 123, 255, 1)' }}
