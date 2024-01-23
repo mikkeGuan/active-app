@@ -28,7 +28,7 @@ This is a React Native mobile application designed to help users find and manage
 
 
 ## License
-This project is licensed under the MIT License -see the details here https://opensource.org/license/mit/
+This project is licensed under the MIT License -see the details in the LICENSE file
 
 ## Author
 **_Ruichao Guan_**
